@@ -1,0 +1,18 @@
+# .NET build output
+bin/
+obj/
+
+# Publish and installer output
+publish/
+publish-folder/
+InstallerOutput/
+
+# User/local settings
+*.user
+*.suo
+.vs/
+
+# Temporary files
+*.tmp
+*.log
+Thumbs.db

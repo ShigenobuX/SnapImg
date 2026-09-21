@@ -1,0 +1,44 @@
+<Window x:Class="ImgConv.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Icon="SnapImg.ico" Title="画像フォーマットコンバーター" Width="950" Height="700" MinWidth="900" MinHeight="700" AllowDrop="True" Drop="OnDrop" Closing="OnClosing">
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolVisibility"/>
+  </Window.Resources>
+  <DockPanel Margin="16">
+    <Button DockPanel.Dock="Top" HorizontalAlignment="Right" Width="90" Height="32" Content="設定" Click="Settings_Click"/>
+    <Grid DockPanel.Dock="Bottom" Margin="0,8,0,0">
+      <Grid.RowDefinitions><RowDefinition Height="50"/><RowDefinition Height="26"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Button x:Name="ConvertButton" Grid.Row="0" Width="220" Height="45" HorizontalAlignment="Center" Content="変換を開始" FontSize="16" FontWeight="Bold" Background="#d9534f" Foreground="White" Click="Convert_Click"/>
+      <ProgressBar x:Name="Progress" Grid.Row="1" Margin="8,5" Minimum="0" Maximum="1"/>
+      <TextBlock x:Name="Status" Grid.Row="2" Text="準備完了" Margin="8,3"/>
+    </Grid>
+    <TextBox x:Name="Log" DockPanel.Dock="Bottom" Height="150" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,8,0,0"/>
+    <Grid Margin="0,8,0,0">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="300"/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+      <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,16,8">
+        <Button Content="ファイルを追加" Click="AddFiles_Click" Margin="0,0,6,0" Padding="12,5"/>
+        <Button Content="フォルダを追加" Click="AddFolder_Click" Margin="0,0,6,0" Padding="12,5"/>
+        <Button Content="選択を削除" Click="Remove_Click" Margin="0,0,6,0" Padding="12,5"/>
+        <Button Content="リストをクリア" Click="Clear_Click" Padding="12,5"/>
+      </StackPanel>
+      <ListBox x:Name="Files" Grid.Column="0" Grid.Row="1" SelectionMode="Extended"/>
+      <TextBlock x:Name="EmptyGuide" Grid.Column="0" Grid.Row="1" Text="ここにファイルをドラッグ＆ドロップしてください&#x0a;&#x0a;または上のボタンからファイルを追加できます" Foreground="#888" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" IsHitTestVisible="False"/>
+      <GroupBox Grid.Column="1" Grid.RowSpan="2" Header="変換設定" Padding="10">
+        <StackPanel>
+          <TextBlock Text="出力形式"/>
+          <ComboBox x:Name="Format" SelectedIndex="0" Margin="0,4,0,12"><ComboBoxItem Content="jpg"/><ComboBoxItem Content="png"/><ComboBoxItem Content="webp"/><ComboBoxItem Content="bmp"/></ComboBox>
+          <TextBlock Text="画質 (JPEG/WEBP)"/>
+          <Slider x:Name="Quality" Minimum="10" Maximum="100" Value="85" TickFrequency="5" IsSnapToTickEnabled="True" ValueChanged="Quality_Changed"/>
+          <TextBlock x:Name="QualityLabel" Text="画質: 85" Margin="0,0,0,12"/>
+          <CheckBox x:Name="Exif" Content="Exif情報を保持する" IsChecked="True" Margin="0,0,0,12"/>
+          <TextBlock Text="リサイズ（ピクセル指定）"/>
+          <StackPanel Orientation="Horizontal" Margin="0,5,0,4"><TextBox x:Name="WidthBox" Width="85" ToolTip="幅 (px)"/><TextBlock Text=" × " VerticalAlignment="Center"/><TextBox x:Name="HeightBox" Width="85" ToolTip="高さ (px)"/></StackPanel>
+          <CheckBox x:Name="KeepAspect" Content="アスペクト比を維持" IsChecked="True" Margin="0,0,0,12"/>
+          <RadioButton x:Name="SameFolder" Content="元ファイルと同じフォルダ" IsChecked="True" GroupName="Destination"/>
+          <RadioButton x:Name="CustomFolder" Content="指定フォルダに保存" GroupName="Destination" Margin="0,5,0,0"/>
+          <Button Content="保存先を選択" Click="SelectFolder_Click" Margin="0,5,0,0"/>
+          <TextBlock x:Name="FolderLabel" TextWrapping="Wrap" Foreground="#666" Margin="0,4,0,0"/>
+        </StackPanel>
+      </GroupBox>
+    </Grid>
+  </DockPanel>
+</Window>
