@@ -6,7 +6,7 @@ public static class ContextMenuService
 {
     private const string Base = @"Software\Classes\*\shell";
     private static readonly (string Key, string Label, string Ext)[] Formats =
-        [("ImageFormatConvert_jpg", "JPGに変換 (品質85%)", "jpg"), ("ImageFormatConvert_png", "PNGに変換", "png"), ("ImageFormatConvert_webp", "WEBPに変換", "webp"), ("ImageFormatConvert_bmp", "BMPに変換", "bmp")];
+        [("ImageFormatConvert_jpg", "JPGに変換 (品質85%)", "jpg"), ("ImageFormatConvert_png", "PNGに変換", "png"), ("ImageFormatConvert_webp", "WEBPに変換", "webp"), ("ImageFormatConvert_avif", "AVIFに変換", "avif"), ("ImageFormatConvert_bmp", "BMPに変換", "bmp")];
 
     public static void Register(IEnumerable<string>? selected = null)
     {

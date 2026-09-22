@@ -13,7 +13,7 @@ public static class CommandLine
         var index = Array.IndexOf(args, "--convert-to");
         if (index < 0) return false;
         if (index + 1 >= args.Length) throw new ArgumentException("変換形式が指定されていません。");
-        var format = args[index + 1].ToLowerInvariant() switch { "jpg" => MagickFormat.Jpeg, "png" => MagickFormat.Png, "webp" => MagickFormat.WebP, "bmp" => MagickFormat.Bmp, _ => throw new ArgumentException("未対応の出力形式です。") };
+        var format = args[index + 1].ToLowerInvariant() switch { "jpg" => MagickFormat.Jpeg, "png" => MagickFormat.Png, "webp" => MagickFormat.WebP, "avif" => MagickFormat.Avif, "bmp" => MagickFormat.Bmp, _ => throw new ArgumentException("未対応の出力形式です。") };
         var files = ImageConverterService.Scan(args.Skip(index + 2));
         if (files.Count == 0) throw new FileNotFoundException("対応する画像ファイルが見つかりません。");
         var ok = 0; var fail = 0;

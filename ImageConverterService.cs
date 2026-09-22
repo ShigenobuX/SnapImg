@@ -60,7 +60,7 @@ public static class ImageConverterService
             image.Format = format;
             var folder = outputFolder ?? Path.GetDirectoryName(input)!;
             Directory.CreateDirectory(folder);
-            var ext = format switch { MagickFormat.Jpeg => ".jpg", MagickFormat.Png => ".png", MagickFormat.WebP => ".webp", _ => ".bmp" };
+            var ext = format switch { MagickFormat.Jpeg => ".jpg", MagickFormat.Png => ".png", MagickFormat.WebP => ".webp", MagickFormat.Avif => ".avif", _ => ".bmp" };
             var baseName = Path.GetFileNameWithoutExtension(input);
             var output = Path.Combine(folder, baseName + ext);
             for (var i = 1; File.Exists(output); i++) output = Path.Combine(folder, $"{baseName}_{i}{ext}");

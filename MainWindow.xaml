@@ -3,7 +3,27 @@
     <BooleanToVisibilityConverter x:Key="BoolVisibility"/>
   </Window.Resources>
   <DockPanel Margin="16">
-    <Button DockPanel.Dock="Top" HorizontalAlignment="Right" Width="90" Height="32" Content="設定" Click="Settings_Click"/>
+    <Grid DockPanel.Dock="Top" Height="34">
+      <Menu HorizontalAlignment="Left" VerticalAlignment="Top">
+        <MenuItem Header="ファイル(_F)">
+          <MenuItem Header="ファイルを追加" Click="AddFiles_Click"/>
+          <MenuItem Header="フォルダを追加" Click="AddFolder_Click"/>
+          <Separator/>
+          <MenuItem Header="選択を削除" Click="Remove_Click"/>
+          <MenuItem Header="ファイルリストをクリア" Click="Clear_Click"/>
+          <Separator/>
+          <MenuItem Header="終了" Click="Exit_Click"/>
+        </MenuItem>
+        <MenuItem Header="設定(_S)" Click="Settings_Click"/>
+        <MenuItem Header="ヘルプ(_H)">
+          <MenuItem Header="ユーザーマニュアル" Click="Manual_Click"/>
+          <MenuItem Header="GitHub リポジトリ" Click="GitHub_Click"/>
+          <Separator/>
+          <MenuItem Header="バージョン情報" Click="About_Click"/>
+        </MenuItem>
+      </Menu>
+      <Button HorizontalAlignment="Right" Width="90" Height="28" Content="設定" Click="Settings_Click"/>
+    </Grid>
     <Grid DockPanel.Dock="Bottom" Margin="0,8,0,0">
       <Grid.RowDefinitions><RowDefinition Height="50"/><RowDefinition Height="26"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Button x:Name="ConvertButton" Grid.Row="0" Width="220" Height="45" HorizontalAlignment="Center" Content="変換を開始" FontSize="16" FontWeight="Bold" Background="#d9534f" Foreground="White" Click="Convert_Click"/>
@@ -25,7 +45,7 @@
       <GroupBox Grid.Column="1" Grid.RowSpan="2" Header="変換設定" Padding="10">
         <StackPanel>
           <TextBlock Text="出力形式"/>
-          <ComboBox x:Name="Format" SelectedIndex="0" Margin="0,4,0,12"><ComboBoxItem Content="jpg"/><ComboBoxItem Content="png"/><ComboBoxItem Content="webp"/><ComboBoxItem Content="bmp"/></ComboBox>
+          <ComboBox x:Name="Format" SelectedIndex="0" Margin="0,4,0,12"><ComboBoxItem Content="jpg"/><ComboBoxItem Content="png"/><ComboBoxItem Content="webp"/><ComboBoxItem Content="avif"/><ComboBoxItem Content="bmp"/></ComboBox>
           <TextBlock Text="画質 (JPEG/WEBP)"/>
           <Slider x:Name="Quality" Minimum="10" Maximum="100" Value="85" TickFrequency="5" IsSnapToTickEnabled="True" ValueChanged="Quality_Changed"/>
           <TextBlock x:Name="QualityLabel" Text="画質: 85" Margin="0,0,0,12"/>

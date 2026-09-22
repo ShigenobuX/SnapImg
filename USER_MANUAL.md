@@ -2,7 +2,7 @@
 
 ## 1. SnapImg について
 
-SnapImg は、画像ファイルを JPG、PNG、WEBP、BMP などへ変換する Windows 用アプリです。
+SnapImg は、画像ファイルを JPG、PNG、WEBP、AVIF、BMP などへ変換する Windows 用アプリです。
 
 複数の画像をまとめて変換できるほか、画像サイズの変更、Exif 情報の保持、保存先の指定にも対応しています。
 
@@ -19,9 +19,11 @@ SnapImg は、画像ファイルを JPG、PNG、WEBP、BMP などへ変換する
 ### 読み込み
 
 - HEIC / HEIF
+- AVIF
 - JPG / JPEG
 - PNG
 - WEBP
+- AVIF
 - BMP
 - TIFF / TIF
 - GIF
@@ -70,7 +72,7 @@ SnapImg は、画像ファイルを JPG、PNG、WEBP、BMP などへ変換する
 
 ### 出力形式
 
-変換後の形式を `jpg`、`png`、`webp`、`bmp` から選択します。
+変換後の形式を `jpg`、`png`、`webp`、`avif`、`bmp` から選択します。
 
 ### 画質
 
@@ -112,6 +114,8 @@ PNG と BMP では画質設定は使用されません。
 4. 「変換を開始」を押します。
 
 大量の HEIC を変換する場合は、フォルダごと追加すると便利です。
+
+AVIF は静止画の読み込み・出力に対応しています。アニメーション AVIF は対象外です。
 
 ## 8. エクスプローラーの右クリックメニュー
 

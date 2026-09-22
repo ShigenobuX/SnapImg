@@ -1,4 +1,5 @@
 using ImageMagick;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -48,7 +49,7 @@ public partial class MainWindow : Window
     private void UpdateGuide() => EmptyGuide.Visibility = selectedFiles.Count == 0 ? Visibility.Visible : Visibility.Hidden;
     private void LogMessage(string text) { Log.AppendText(text + Environment.NewLine); Log.ScrollToEnd(); }
     private void AddFiles_Click(object sender, RoutedEventArgs e)
-    { var dialog = new WpfOpenFileDialog { Multiselect = true, Filter = "画像ファイル|*.heic;*.heif;*.png;*.jpg;*.jpeg;*.webp;*.bmp;*.tif;*.tiff;*.gif;*.ico|すべてのファイル|*.*" }; if (dialog.ShowDialog() == true) Add(dialog.FileNames); }
+    { var dialog = new WpfOpenFileDialog { Multiselect = true, Filter = "画像ファイル|*.heic;*.heif;*.avif;*.png;*.jpg;*.jpeg;*.webp;*.bmp;*.tif;*.tiff;*.gif;*.ico|すべてのファイル|*.*" }; if (dialog.ShowDialog() == true) Add(dialog.FileNames); }
     private void AddFolder_Click(object sender, RoutedEventArgs e) { using var dialog = new Forms.FolderBrowserDialog(); if (dialog.ShowDialog() == Forms.DialogResult.OK) Add([dialog.SelectedPath]); }
     private void SelectFolder_Click(object sender, RoutedEventArgs e) { using var dialog = new Forms.FolderBrowserDialog(); if (dialog.ShowDialog() == Forms.DialogResult.OK) { customFolder = dialog.SelectedPath; FolderLabel.Text = customFolder; CustomFolder.IsChecked = true; } }
     private void Remove_Click(object sender, RoutedEventArgs e) { var items = Files.SelectedItems.Cast<string>().ToList(); foreach (var item in items) { selectedFiles.Remove(item); Files.Items.Remove(item); } if (items.Count > 0) LogMessage($"{items.Count} 件をリストから削除しました。"); UpdateGuide(); }
@@ -65,12 +66,23 @@ public partial class MainWindow : Window
         {
             if (action == WpfMessageBoxResult.No) { ContextMenuService.Unregister(); WpfMessageBox.Show("右クリックメニューを解除しました。"); return; }
             if (action != WpfMessageBoxResult.Yes) return;
-            var formats = new[] { "jpg", "png", "webp", "bmp" };
+            var formats = new[] { "jpg", "png", "webp", "avif", "bmp" };
             var selected = formats.Where(x => WpfMessageBox.Show($"右クリックメニューに {x.ToUpperInvariant()} を登録しますか？", "設定", WpfMessageBoxButton.YesNo) == WpfMessageBoxResult.Yes);
             ContextMenuService.Register(selected);
             WpfMessageBox.Show("右クリックメニューを登録しました。");
         }
         catch (Exception ex) { WpfMessageBox.Show(ex.Message, "設定エラー"); }
+    }
+    private void Exit_Click(object sender, RoutedEventArgs e) => Close();
+    private void Manual_Click(object sender, RoutedEventArgs e) => new HelpWindow { Owner = this }.ShowDialog();
+    private void GitHub_Click(object sender, RoutedEventArgs e)
+    {
+        try { Process.Start(new ProcessStartInfo("https://github.com/ShigenobuX/SnapImg") { UseShellExecute = true }); }
+        catch (Exception ex) { WpfMessageBox.Show(ex.Message, "GitHubを開けません"); }
+    }
+    private void About_Click(object sender, RoutedEventArgs e)
+    {
+        WpfMessageBox.Show($"SnapImg\n\n画像フォーマット変換ツール\nVersion {AppInfo.Version}\n\n画像処理エンジン: ImageMagick / Magick.NET\n© 2026 SnapImg", "バージョン情報", WpfMessageBoxButton.OK, MessageBoxImage.Information);
     }
     private async void Convert_Click(object sender, RoutedEventArgs e)
     {
@@ -78,7 +90,7 @@ public partial class MainWindow : Window
         if (CustomFolder.IsChecked == true && string.IsNullOrWhiteSpace(customFolder)) { WpfMessageBox.Show("保存先フォルダを選択してください。"); return; }
         ConvertButton.IsEnabled = false; conversionCts = new(); Progress.Value = 0;
         var output = (Format.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "jpg";
-        var magickFormat = output switch { "jpg" => MagickFormat.Jpeg, "png" => MagickFormat.Png, "webp" => MagickFormat.WebP, _ => MagickFormat.Bmp };
+        var magickFormat = output switch { "jpg" => MagickFormat.Jpeg, "png" => MagickFormat.Png, "webp" => MagickFormat.WebP, "avif" => MagickFormat.Avif, _ => MagickFormat.Bmp };
         // UI コントロールは UI スレッドで読み取り、バックグラウンド処理には値だけ渡す。
         var quality = (int)Quality.Value;
         var preserveExif = Exif.IsChecked == true;

@@ -9,6 +9,6 @@ public sealed class AppSettings
 
 public static class AppInfo
 {
-    public const string Version = "0.9.0";
-    public static readonly string[] InputExtensions = [".heic", ".heif", ".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tif", ".tiff", ".gif", ".ico"];
+    public const string Version = "0.9.1";
+    public static readonly string[] InputExtensions = [".heic", ".heif", ".avif", ".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tif", ".tiff", ".gif", ".ico"];
 }

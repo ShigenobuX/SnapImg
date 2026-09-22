@@ -7,8 +7,8 @@ Windows 向けの画像フォーマット変換アプリです。WPF と .NET 8 
 
 ## 主な機能
 
-- HEIC / HEIF、PNG、JPG / JPEG、WEBP、BMP、TIFF、GIF、ICO の読み込み
-- JPG、PNG、WEBP、BMP への変換
+- HEIC / HEIF、AVIF、PNG、JPG / JPEG、WEBP、BMP、TIFF、GIF、ICO の読み込み
+- JPG、PNG、WEBP、AVIF、BMP への変換
 - 複数ファイルの一括変換
 - ファイル・フォルダの追加、ドラッグ＆ドロップ
 - JPEG / WEBP の画質設定
@@ -69,7 +69,7 @@ C:\work\SnapImg\bin\Release\net8.0-windows\snapimg.exe
 
 ## 右クリックメニュー
 
-画面右上の「設定」ボタンから登録できます。「はい」を選ぶと JPG / PNG / WEBP / BMP の登録形式を選択できます。「いいえ」を選ぶと登録を解除します。
+画面右上の「設定」ボタンから登録できます。「はい」を選ぶと JPG / PNG / WEBP / AVIF / BMP の登録形式を選択できます。「いいえ」を選ぶと登録を解除します。
 
 Windows 11 では「その他のオプションを確認」に表示される場合があります。
 
@@ -82,7 +82,7 @@ Windows 11 では「その他のオプションを確認」に表示される場
 .\snapimg.exe --unregister-menu
 ```
 
-対応する出力形式は `jpg`、`png`、`webp`、`bmp` です。
+対応する出力形式は `jpg`、`png`、`webp`、`avif`、`bmp` です。
 
 ## 設定ファイル
 

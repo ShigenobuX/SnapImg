@@ -5,6 +5,7 @@ obj/
 # Publish and installer output
 publish/
 publish-folder/
+publish-folder-*/
 InstallerOutput/
 
 # User/local settings
