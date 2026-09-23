@@ -26,7 +26,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         var settings = LoadSettings();
         Width = settings.Width; Height = settings.Height;
-        Title = $"画像フォーマットコンバーター v {AppInfo.Version}";
+        Title = $"SnapImg v {AppInfo.Version}";
         UpdateGuide();
     }
 
@@ -74,6 +74,11 @@ public partial class MainWindow : Window
         catch (Exception ex) { WpfMessageBox.Show(ex.Message, "設定エラー"); }
     }
     private void Exit_Click(object sender, RoutedEventArgs e) => Close();
+    private void MenuButton_Click(object sender, RoutedEventArgs e)
+    {
+        MenuButton.ContextMenu!.PlacementTarget = MenuButton;
+        MenuButton.ContextMenu.IsOpen = true;
+    }
     private void Manual_Click(object sender, RoutedEventArgs e) => new HelpWindow { Owner = this }.ShowDialog();
     private void GitHub_Click(object sender, RoutedEventArgs e)
     {
