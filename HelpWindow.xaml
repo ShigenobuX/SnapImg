@@ -12,7 +12,7 @@
         <TextBlock Text="設定について" FontSize="18" FontWeight="Bold" Margin="0,0,0,6"/>
         <TextBlock Text="JPEG と WEBP の画質は 10～100 で設定できます。Exif 情報を保持したくない場合はチェックを外してください。幅・高さを入力するとリサイズできます。保存先を指定しない場合は元画像と同じフォルダへ保存されます。" TextWrapping="Wrap" Margin="0,0,0,18"/>
         <TextBlock Text="右クリックメニュー" FontSize="18" FontWeight="Bold" Margin="0,0,0,6"/>
-        <TextBlock Text="「設定」から JPG / PNG / WEBP / AVIF / BMP の右クリック変換メニューを登録・解除できます。Windows 11 では「その他のオプションを確認」に表示される場合があります。" TextWrapping="Wrap" Margin="0,0,0,18"/>
+        <TextBlock Text="「右クリックメニューを管理...」から JPG / PNG / WEBP / AVIF / BMP の右クリック変換メニューを登録・解除できます。Windows 11 では「その他のオプションを確認」に表示される場合があります。" TextWrapping="Wrap" Margin="0,0,0,18"/>
         <TextBlock Text="注意" FontSize="18" FontWeight="Bold" Margin="0,0,0,6"/>
         <TextBlock Text="変換後に同名ファイルがある場合は連番が付加され、元画像は上書きされません。アニメーション AVIF は対象外です。" TextWrapping="Wrap"/>
       </StackPanel>

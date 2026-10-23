@@ -22,7 +22,7 @@
               <MenuItem Header="選択を削除" Click="Remove_Click"/>
               <MenuItem Header="ファイルリストをクリア" Click="Clear_Click"/>
               <Separator/>
-              <MenuItem Header="設定" Click="Settings_Click"/>
+              <MenuItem Header="右クリックメニューを管理..." Click="Settings_Click"/>
               <Separator/>
               <MenuItem Header="ヘルプ" IsEnabled="False" FontWeight="SemiBold"/>
               <MenuItem Header="ユーザーマニュアル" Click="Manual_Click"/>

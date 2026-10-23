@@ -8,8 +8,8 @@ public static class CommandLine
 {
     public static bool Run(string[] args)
     {
-        if (args.Contains("--register-menu")) { ContextMenuService.Register(); WpfMessageBox.Show("右クリックメニューを登録しました。", "imgconv"); return true; }
-        if (args.Contains("--unregister-menu")) { ContextMenuService.Unregister(); WpfMessageBox.Show("右クリックメニューを解除しました。", "imgconv"); return true; }
+        if (args.Contains("--register-menu")) { ContextMenuService.Register(); return true; }
+        if (args.Contains("--unregister-menu")) { ContextMenuService.Unregister(); return true; }
         var index = Array.IndexOf(args, "--convert-to");
         if (index < 0) return false;
         if (index + 1 >= args.Length) throw new ArgumentException("変換形式が指定されていません。");

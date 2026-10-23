@@ -61,17 +61,32 @@ public partial class MainWindow : Window
     }
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
-        var action = WpfMessageBox.Show("右クリックメニューを登録しますか？\n\n「いいえ」を選ぶと登録を解除します。", "設定", WpfMessageBoxButton.YesNoCancel);
         try
         {
-            if (action == WpfMessageBoxResult.No) { ContextMenuService.Unregister(); WpfMessageBox.Show("右クリックメニューを解除しました。"); return; }
-            if (action != WpfMessageBoxResult.Yes) return;
-            var formats = new[] { "jpg", "png", "webp", "avif", "bmp" };
-            var selected = formats.Where(x => WpfMessageBox.Show($"右クリックメニューに {x.ToUpperInvariant()} を登録しますか？", "設定", WpfMessageBoxButton.YesNo) == WpfMessageBoxResult.Yes);
-            ContextMenuService.Register(selected);
-            WpfMessageBox.Show("右クリックメニューを登録しました。");
+            var state = ContextMenuService.GetRegistrationState();
+            if (state == ContextMenuRegistrationState.Registered)
+            {
+                var action = WpfMessageBox.Show("右クリックメニューは登録済みです。\n\n解除しますか？", "右クリックメニューを管理", WpfMessageBoxButton.YesNo);
+                if (action == WpfMessageBoxResult.Yes)
+                {
+                    if (ContextMenuService.UnregisterWithElevation()) WpfMessageBox.Show("右クリックメニューを解除しました。");
+                    else WpfMessageBox.Show("右クリックメニューの解除を中止しました。", "右クリックメニューを管理");
+                }
+                return;
+            }
+
+            var message = state == ContextMenuRegistrationState.Unregistered
+                ? "右クリックメニューは未登録です。\n\n登録しますか？"
+                : "右クリックメニューの登録内容が不完全です。\n\n修復しますか？";
+            var confirmation = WpfMessageBox.Show(message, "右クリックメニューを管理", WpfMessageBoxButton.YesNo);
+            if (confirmation != WpfMessageBoxResult.Yes) return;
+
+            if (ContextMenuService.RegisterWithElevation())
+                WpfMessageBox.Show(state == ContextMenuRegistrationState.Unregistered ? "右クリックメニューを登録しました。" : "右クリックメニューを修復しました。");
+            else
+                WpfMessageBox.Show(state == ContextMenuRegistrationState.Unregistered ? "右クリックメニューの登録を中止しました。" : "右クリックメニューの修復を中止しました。", "右クリックメニューを管理");
         }
-        catch (Exception ex) { WpfMessageBox.Show(ex.Message, "設定エラー"); }
+        catch (Exception ex) { WpfMessageBox.Show(ex.Message, "右クリックメニューを管理"); }
     }
     private void Exit_Click(object sender, RoutedEventArgs e) => Close();
     private void MenuButton_Click(object sender, RoutedEventArgs e)
