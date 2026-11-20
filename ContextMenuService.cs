@@ -17,6 +17,8 @@ public static class ContextMenuService
     private const string LegacyMenuBase = @"Software\Classes\SystemFileAssociations\image\shell";
     private const string CommandStoreBase = @"Software\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell";
     private const string MenuName = "SnapImg";
+    private const string ClipboardCommandKey = "SnapImg_CopyToClipboard";
+    private const string ClipboardCommandLabel = "クリップボードにコピー";
     private static readonly (string Key, string Label, string Ext)[] Formats =
         [("SnapImg_Jpg", "JPGに変換 (品質85%)", "jpg"), ("SnapImg_Png", "PNGに変換", "png"), ("SnapImg_Webp", "WEBPに変換", "webp"), ("SnapImg_Avif", "AVIFに変換", "avif"), ("SnapImg_Bmp", "BMPに変換", "bmp")];
 
@@ -28,7 +30,7 @@ public static class ContextMenuService
         using var menu = Registry.LocalMachine.OpenSubKey($"{MenuBase}\\{MenuName}");
         if (menu is null) return ContextMenuRegistrationState.Unregistered;
 
-        var expectedSubCommands = string.Join(';', Formats.Select(x => x.Key));
+        var expectedSubCommands = string.Join(';', new[] { ClipboardCommandKey }.Concat(Formats.Select(x => x.Key)));
         if (!string.Equals(menu.GetValue("SubCommands") as string, expectedSubCommands, StringComparison.Ordinal))
             return ContextMenuRegistrationState.Incomplete;
 
@@ -41,6 +43,11 @@ public static class ContextMenuService
             if (command?.GetValue(null) is not string value || !value.Contains($"--convert-to {item.Ext}", StringComparison.OrdinalIgnoreCase))
                 return ContextMenuRegistrationState.Incomplete;
         }
+
+        using var clipboardCommand = commandStore.OpenSubKey($"{ClipboardCommandKey}\\command");
+        if (clipboardCommand?.GetValue(null) is not string clipboardValue ||
+            !clipboardValue.Contains("--copy-to-clipboard", StringComparison.OrdinalIgnoreCase))
+            return ContextMenuRegistrationState.Incomplete;
 
         return ContextMenuRegistrationState.Registered;
     }
@@ -55,10 +62,18 @@ public static class ContextMenuService
         {
             menu.SetValue("MUIVerb", "SnapImg");
             menu.SetValue("Icon", $"{exe},0");
-            menu.SetValue("SubCommands", string.Join(';', Formats.Select(x => x.Key)));
+            menu.SetValue("SubCommands", string.Join(';', new[] { ClipboardCommandKey }.Concat(Formats.Select(x => x.Key))));
         }
 
         using var commandStore = Registry.LocalMachine.CreateSubKey(CommandStoreBase)!;
+        using (var clipboardItem = commandStore.CreateSubKey(ClipboardCommandKey)!)
+        {
+            clipboardItem.SetValue("MUIVerb", ClipboardCommandLabel);
+            clipboardItem.SetValue("Icon", $"{exe},0");
+            using var command = clipboardItem.CreateSubKey("command")!;
+            command.SetValue(null, $"\"{exe}\" --copy-to-clipboard \"%1\"");
+        }
+
         foreach (var item in Formats)
         {
             using var commandItem = commandStore.CreateSubKey(item.Key)!;
@@ -73,6 +88,7 @@ public static class ContextMenuService
     {
         Registry.LocalMachine.DeleteSubKeyTree($"{MenuBase}\\{MenuName}", false);
         Registry.LocalMachine.DeleteSubKeyTree($"{LegacyMenuBase}\\{MenuName}", false);
+        Registry.LocalMachine.DeleteSubKeyTree($"{CommandStoreBase}\\{ClipboardCommandKey}", false);
         foreach (var item in Formats)
             Registry.LocalMachine.DeleteSubKeyTree($"{CommandStoreBase}\\{item.Key}", false);
 

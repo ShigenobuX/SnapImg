@@ -10,6 +10,16 @@ public static class CommandLine
     {
         if (args.Contains("--register-menu")) { ContextMenuService.Register(); return true; }
         if (args.Contains("--unregister-menu")) { ContextMenuService.Unregister(); return true; }
+        var copyIndex = Array.IndexOf(args, "--copy-to-clipboard");
+        if (copyIndex >= 0)
+        {
+            var file = args.Skip(copyIndex + 1).FirstOrDefault(File.Exists);
+            if (file is null) throw new FileNotFoundException("クリップボードにコピーする画像ファイルが見つかりません。");
+
+            var result = ClipboardImageService.Copy(file);
+            WpfMessageBox.Show(result.Message, result.Success ? "コピー完了" : "コピーできませんでした");
+            return true;
+        }
         var index = Array.IndexOf(args, "--convert-to");
         if (index < 0) return false;
         if (index + 1 >= args.Length) throw new ArgumentException("変換形式が指定されていません。");

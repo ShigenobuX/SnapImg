@@ -8,8 +8,7 @@
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
           <Button Content="&#xE8E5;" Click="AddFiles_Click" ToolTip="ファイルを追加" Width="42" Height="32" FontFamily="Segoe Fluent Icons" FontSize="18" Margin="0,0,6,0"/>
           <Button Content="&#xE8B7;" Click="AddFolder_Click" ToolTip="フォルダを追加" Width="42" Height="32" FontFamily="Segoe Fluent Icons" FontSize="18" Margin="0,0,6,0"/>
-          <Button Content="&#xE74D;" Click="Remove_Click" ToolTip="選択を削除" Width="42" Height="32" FontFamily="Segoe Fluent Icons" FontSize="18" Margin="0,0,6,0"/>
-          <Button Content="&#xE894;" Click="Clear_Click" ToolTip="リストをクリア" Width="42" Height="32" FontFamily="Segoe Fluent Icons" FontSize="18"/>
+          <Button Content="&#xE74D;" Click="Clear_Click" ToolTip="リストをクリア" Width="42" Height="32" FontFamily="Segoe Fluent Icons" FontSize="18"/>
         </StackPanel>
         <Button x:Name="MenuButton" HorizontalAlignment="Right" Width="38" Height="32" Content="☰" FontSize="19" Background="Transparent" BorderThickness="0" ToolTip="メニュー" Click="MenuButton_Click">
           <Button.ContextMenu>
@@ -19,7 +18,7 @@
               <MenuItem Header="フォルダを追加" Click="AddFolder_Click"/>
               <Separator/>
               <MenuItem Header="表示" IsEnabled="False" FontWeight="SemiBold"/>
-              <MenuItem Header="選択を削除" Click="Remove_Click"/>
+              <MenuItem x:Name="RemoveSelectedMenuItem" Header="選択を削除" Click="Remove_Click" IsEnabled="False"/>
               <MenuItem Header="ファイルリストをクリア" Click="Clear_Click"/>
               <Separator/>
               <MenuItem Header="右クリックメニューを管理..." Click="Settings_Click"/>
@@ -45,7 +44,39 @@
     <Grid Margin="0,8,0,0">
       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="300"/></Grid.ColumnDefinitions>
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-      <ListBox x:Name="Files" Grid.Column="0" Grid.Row="1" SelectionMode="Extended"/>
+      <ListBox x:Name="Files" Grid.Column="0" Grid.Row="1" SelectionMode="Extended" SelectionChanged="Files_SelectionChanged">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid MinHeight="28">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Button Grid.Column="0" Content="×" Tag="{Binding}" Click="RemoveFile_Click"
+                      ToolTip="このファイルをリストから削除" Width="24" Height="24" Padding="0"
+                      FontFamily="Segoe UI Symbol" FontSize="16" BorderThickness="1"
+                      Cursor="Hand" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Button.Style>
+                  <Style TargetType="Button">
+                    <Setter Property="Foreground" Value="#777777"/>
+                    <Setter Property="Background" Value="#FAFAFA"/>
+                    <Setter Property="BorderBrush" Value="#B8B8B8"/>
+                    <Style.Triggers>
+                      <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="#C42B1C"/>
+                        <Setter Property="Background" Value="#FCE8E6"/>
+                        <Setter Property="BorderBrush" Value="#C42B1C"/>
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </Button.Style>
+              </Button>
+              <TextBlock Grid.Column="1" Text="{Binding}" VerticalAlignment="Center"
+                         TextTrimming="CharacterEllipsis" ToolTip="{Binding}"/>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
       <TextBlock x:Name="EmptyGuide" Grid.Column="0" Grid.Row="1" Text="ここにファイルをドラッグ＆ドロップしてください&#x0a;&#x0a;または上のボタンからファイルを追加できます" Foreground="#888" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" IsHitTestVisible="False"/>
       <GroupBox Grid.Column="1" Grid.RowSpan="2" Header="変換設定" Padding="10">
         <StackPanel>

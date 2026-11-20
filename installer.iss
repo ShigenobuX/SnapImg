@@ -1,5 +1,5 @@
 #define MyAppName "SnapImg"
-#define MyAppVersion "0.9.3"
+#define MyAppVersion "0.9.4"
 #define MyAppPublisher "SnapImg"
 #define MyAppExeName "snapimg.exe"
 
@@ -36,3 +36,6 @@ Name: "{autodesktop}\SnapImg"; Filename: "{app}\{#MyAppExeName}"; IconFilename: 
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "SnapImg を起動"; Flags: nowait postinstall skipifsilent
+
+[UninstallRun]
+Filename: "{app}\{#MyAppExeName}"; Parameters: "--unregister-menu"; Flags: runhidden waituntilterminated; RunOnceId: "UnregisterContextMenu"

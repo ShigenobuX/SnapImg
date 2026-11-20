@@ -53,6 +53,20 @@ public partial class MainWindow : Window
     private void AddFolder_Click(object sender, RoutedEventArgs e) { using var dialog = new Forms.FolderBrowserDialog(); if (dialog.ShowDialog() == Forms.DialogResult.OK) Add([dialog.SelectedPath]); }
     private void SelectFolder_Click(object sender, RoutedEventArgs e) { using var dialog = new Forms.FolderBrowserDialog(); if (dialog.ShowDialog() == Forms.DialogResult.OK) { customFolder = dialog.SelectedPath; FolderLabel.Text = customFolder; CustomFolder.IsChecked = true; } }
     private void Remove_Click(object sender, RoutedEventArgs e) { var items = Files.SelectedItems.Cast<string>().ToList(); foreach (var item in items) { selectedFiles.Remove(item); Files.Items.Remove(item); } if (items.Count > 0) LogMessage($"{items.Count} 件をリストから削除しました。"); UpdateGuide(); }
+    private void RemoveFile_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not System.Windows.Controls.Button { Tag: string file }) return;
+        if (!selectedFiles.Remove(file)) return;
+
+        Files.Items.Remove(file);
+        LogMessage($"リストから削除しました: {file}");
+        UpdateGuide();
+    }
+    private void Files_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (RemoveSelectedMenuItem != null && Files != null)
+            RemoveSelectedMenuItem.IsEnabled = Files.SelectedItems.Count > 0;
+    }
     private void Clear_Click(object sender, RoutedEventArgs e) { selectedFiles.Clear(); Files.Items.Clear(); LogMessage("ファイルリストをクリアしました。"); UpdateGuide(); }
     private void OnDrop(object sender, WpfDragEventArgs e) { if (e.Data.GetDataPresent(WpfDataFormats.FileDrop)) Add((string[])e.Data.GetData(WpfDataFormats.FileDrop)); }
     private void Quality_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -102,7 +116,7 @@ public partial class MainWindow : Window
     }
     private void About_Click(object sender, RoutedEventArgs e)
     {
-        WpfMessageBox.Show($"SnapImg\n\n画像フォーマット変換ツール\nVersion {AppInfo.Version}\n\n画像処理エンジン: ImageMagick / Magick.NET\n© 2026 SnapImg", "バージョン情報", WpfMessageBoxButton.OK, MessageBoxImage.Information);
+        WpfMessageBox.Show($"SnapImg\n\n画像フォーマット変換ツール\nVersion {AppInfo.Version}\n\n画像処理エンジン: ImageMagick / Magick.NET\n© 2026 S.Iga", "バージョン情報", WpfMessageBoxButton.OK, MessageBoxImage.Information);
     }
     private async void Convert_Click(object sender, RoutedEventArgs e)
     {
