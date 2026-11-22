@@ -48,6 +48,11 @@
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid MinHeight="28">
+              <Grid.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="プロパティ" Click="FileProperties_Click"/>
+                </ContextMenu>
+              </Grid.ContextMenu>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30"/>
                 <ColumnDefinition Width="*"/>

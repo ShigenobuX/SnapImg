@@ -7,6 +7,8 @@
         <TextBlock Text="画像ファイルを JPG、PNG、WEBP、AVIF、BMP などへ変換する Windows アプリです。" TextWrapping="Wrap" Margin="0,0,0,18"/>
         <TextBlock Text="基本操作" FontSize="18" FontWeight="Bold" Margin="0,0,0,6"/>
         <TextBlock Text="1. 「ファイルを追加」または「フォルダを追加」で画像を登録します。&#x0a;2. 出力形式、画質、Exif、リサイズ、保存先を設定します。&#x0a;3. 「変換を開始」を押します。&#x0a;&#x0a;画像やフォルダをファイル一覧へドラッグ＆ドロップして追加することもできます。" TextWrapping="Wrap" Margin="0,0,0,18"/>
+        <TextBlock Text="ファイルのプロパティ" FontSize="18" FontWeight="Bold" Margin="0,0,0,6"/>
+        <TextBlock Text="ファイル一覧の項目を右クリックして「プロパティ」を選ぶと、正方形のプレビューと、ファイルの保存場所・形式・サイズ・更新日時、画像サイズ・縦横比・解像度・色深度・フレーム数を確認できます。縦横比は正確な値の後ろに近似値を括弧で表示します（例: 180:197 (9:10)）。プレビューは縦横比を保ち、長辺が枠に収まる大きさで表示します。" TextWrapping="Wrap" Margin="0,0,0,18"/>
         <TextBlock Text="対応形式" FontSize="18" FontWeight="Bold" Margin="0,0,0,6"/>
         <TextBlock Text="入力: HEIC / HEIF / AVIF / JPG / JPEG / PNG / WEBP / BMP / TIFF / GIF / ICO&#x0a;出力: JPG / PNG / WEBP / AVIF / BMP" TextWrapping="Wrap" Margin="0,0,0,18"/>
         <TextBlock Text="設定について" FontSize="18" FontWeight="Bold" Margin="0,0,0,6"/>

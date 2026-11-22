@@ -1,5 +1,5 @@
 #define MyAppName "SnapImg"
-#define MyAppVersion "0.9.4"
+#define MyAppVersion "0.9.5"
 #define MyAppPublisher "SnapImg"
 #define MyAppExeName "snapimg.exe"
 

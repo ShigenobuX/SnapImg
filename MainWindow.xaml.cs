@@ -67,6 +67,22 @@ public partial class MainWindow : Window
         if (RemoveSelectedMenuItem != null && Files != null)
             RemoveSelectedMenuItem.IsEnabled = Files.SelectedItems.Count > 0;
     }
+    private async void FileProperties_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not MenuItem menuItem ||
+            menuItem.Parent is not ContextMenu { PlacementTarget: FrameworkElement { DataContext: string file } })
+            return;
+
+        try
+        {
+            var properties = await Task.Run(() => ImagePropertiesService.Read(file));
+            new ImagePropertiesWindow(properties) { Owner = this }.ShowDialog();
+        }
+        catch (Exception ex)
+        {
+            WpfMessageBox.Show(this, $"ファイルのプロパティを読み取れませんでした。\n\n{ex.Message}", "プロパティ", WpfMessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
     private void Clear_Click(object sender, RoutedEventArgs e) { selectedFiles.Clear(); Files.Items.Clear(); LogMessage("ファイルリストをクリアしました。"); UpdateGuide(); }
     private void OnDrop(object sender, WpfDragEventArgs e) { if (e.Data.GetDataPresent(WpfDataFormats.FileDrop)) Add((string[])e.Data.GetData(WpfDataFormats.FileDrop)); }
     private void Quality_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
