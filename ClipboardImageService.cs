@@ -13,7 +13,7 @@ public static class ClipboardImageService
     {
         try
         {
-            using var image = new MagickImage(input);
+            using var image = ImageConverterService.ReadImage(input);
 
             // Match the converter's known-stable orientation behavior for HEIC/HEIF.
             var extension = Path.GetExtension(input);

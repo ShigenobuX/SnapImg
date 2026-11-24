@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Forms = System.Windows.Forms;
 using WpfDragEventArgs = System.Windows.DragEventArgs;
 using WpfDataFormats = System.Windows.DataFormats;
@@ -49,7 +50,7 @@ public partial class MainWindow : Window
     private void UpdateGuide() => EmptyGuide.Visibility = selectedFiles.Count == 0 ? Visibility.Visible : Visibility.Hidden;
     private void LogMessage(string text) { Log.AppendText(text + Environment.NewLine); Log.ScrollToEnd(); }
     private void AddFiles_Click(object sender, RoutedEventArgs e)
-    { var dialog = new WpfOpenFileDialog { Multiselect = true, Filter = "画像ファイル|*.heic;*.heif;*.avif;*.png;*.jpg;*.jpeg;*.webp;*.bmp;*.tif;*.tiff;*.gif;*.ico|すべてのファイル|*.*" }; if (dialog.ShowDialog() == true) Add(dialog.FileNames); }
+    { var dialog = new WpfOpenFileDialog { Multiselect = true, Filter = "画像ファイル|*.heic;*.heif;*.avif;*.png;*.jpg;*.jpeg;*.webp;*.bmp;*.tif;*.tiff;*.gif;*.ico;*.svg|すべてのファイル|*.*" }; if (dialog.ShowDialog() == true) Add(dialog.FileNames); }
     private void AddFolder_Click(object sender, RoutedEventArgs e) { using var dialog = new Forms.FolderBrowserDialog(); if (dialog.ShowDialog() == Forms.DialogResult.OK) Add([dialog.SelectedPath]); }
     private void SelectFolder_Click(object sender, RoutedEventArgs e) { using var dialog = new Forms.FolderBrowserDialog(); if (dialog.ShowDialog() == Forms.DialogResult.OK) { customFolder = dialog.SelectedPath; FolderLabel.Text = customFolder; CustomFolder.IsChecked = true; } }
     private void Remove_Click(object sender, RoutedEventArgs e) { var items = Files.SelectedItems.Cast<string>().ToList(); foreach (var item in items) { selectedFiles.Remove(item); Files.Items.Remove(item); } if (items.Count > 0) LogMessage($"{items.Count} 件をリストから削除しました。"); UpdateGuide(); }
@@ -66,6 +67,41 @@ public partial class MainWindow : Window
     {
         if (RemoveSelectedMenuItem != null && Files != null)
             RemoveSelectedMenuItem.IsEnabled = Files.SelectedItems.Count > 0;
+    }
+    private void Files_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (e.OriginalSource is not DependencyObject source || IsInsideButton(source))
+            return;
+
+        if (Files.ContainerFromElement(source) is not ListBoxItem { DataContext: string file })
+            return;
+
+        try
+        {
+            if (!File.Exists(file))
+                throw new FileNotFoundException("ファイルが見つかりません。", file);
+
+            Process.Start(new ProcessStartInfo(file) { UseShellExecute = true });
+        }
+        catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1155)
+        {
+            WpfMessageBox.Show(this, "このファイル形式に関連付けられたアプリがありません。Windows の設定で既定のアプリを指定してください。", "ファイルを開けません", WpfMessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        catch (Exception ex)
+        {
+            WpfMessageBox.Show(this, $"既定のアプリでファイルを開けませんでした。\n\n{file}\n\n{ex.Message}", "ファイルを開けません", WpfMessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private static bool IsInsideButton(DependencyObject element)
+    {
+        for (var current = element; current != null; current = VisualTreeHelper.GetParent(current))
+        {
+            if (current is System.Windows.Controls.Primitives.ButtonBase)
+                return true;
+        }
+
+        return false;
     }
     private async void FileProperties_Click(object sender, RoutedEventArgs e)
     {

@@ -1,23 +1,18 @@
-<<<<<<< HEAD
-# SnapImg
-=======
 # SnapImg
 
-Windows 向けの画像フォーマット変換アプリです。WPF と .NET 8 で動作し、生成される実行ファイル名は `snapimg.exe` です。
+SnapImg は Windows 向けの画像フォーマット変換アプリです。WPF と .NET 8 で動作し、実行ファイル名は `snapimg.exe` です。
 
 ## 主な機能
 
-- HEIC / HEIF、AVIF、PNG、JPG / JPEG、WEBP、BMP、TIFF、GIF、ICO の読み込み
-- JPG、PNG、WEBP、AVIF、BMP への変換
-- 複数ファイルの一括変換
-- ファイル・フォルダの追加、ドラッグ＆ドロップ
-- JPEG / WEBP の画質設定
-- Exif 情報の保持または削除
-- 幅・高さを指定したリサイズ、アスペクト比の維持
-- 保存先フォルダの指定
-- 同名ファイルへの連番付与
-- Windows エクスプローラーの右クリックメニューへの登録
-- コマンドラインからの変換
+- SVG のラスタライズと、HEIC / HEIF / AVIF / JPG / PNG / WEBP / BMP / TIFF / GIF / ICO の読み込み
+- JPG / PNG / WEBP / AVIF / BMP への変換
+- 複数ファイルの一括変換、フォルダ追加、ドラッグ＆ドロップ
+- JPEG / WEBP の画質設定、Exif 情報の保持または削除
+- 幅・高さを指定したリサイズとアスペクト比の維持
+- 画像プロパティとサムネイルの表示
+- Windows エクスプローラーの右クリックメニュー、クリップボードコピー
+
+SVG は 96 dpi を基準に読み込み、ピクセル画像へ変換します。必要な出力寸法はリサイズ設定で指定できます。PNG は透明背景を保持し、JPG は透明部分を白で塗りつぶします。
 
 ## 必要な環境
 
@@ -28,101 +23,41 @@ Windows 向けの画像フォーマット変換アプリです。WPF と .NET 8 
 
 ## ビルド
 
-PowerShell でプロジェクトのフォルダへ移動し、次を実行します。
-
 ```powershell
 cd C:\work\SnapImg
 dotnet restore .\imgconv.csproj
-dotnet build .\imgconv.csproj -c Release
-```
-
-ビルド後の実行ファイル：
-
-```text
-C:\work\SnapImg\bin\Release\net8.0-windows\snapimg.exe
-```
-
-バッチファイルも利用できます。
-
-```powershell
 .\build.bat
 ```
 
-ビルドは Release 構成で行われ、`bin\Release\net8.0-windows\snapimg.exe` に生成されます。
-
-依存ランタイムを含む配布用ファイル一式を作成する場合：
+Release ビルドは `bin\Release\net8.0-windows\snapimg.exe` に生成されます。配布用の自己完結ファイル一式を作るには次を実行します。
 
 ```powershell
 .\build_publish.bat
 ```
 
-`publish-folder` フォルダ内のファイルをすべて配布してください。`snapimg.exe` だけを取り出して配布することはできません。WPF と画像処理ライブラリが使用するネイティブ DLL も必要です。
+配布時は `publish-folder` 内のファイル一式が必要です。インストーラーを作る場合は Inno Setup 7 をインストールしてから `build_installer.bat` を実行してください。
 
-## GUI の使い方
+## 基本操作
 
-1. `snapimg.exe` を起動します。
-2. 「ファイルを追加」または「フォルダを追加」を押します。
-3. 変換形式、画質、Exif、リサイズ、保存先を設定します。
-4. 「変換を開始」を押します。
+1. 「ファイルを追加」または「フォルダを追加」で画像を登録します。
+2. 出力形式や画質、Exif、リサイズ、保存先を設定します。
+3. 「変換を開始」を押します。
 
-画像ファイルやフォルダを、画面上のファイル一覧へドラッグ＆ドロップして追加することもできます。
+SVG は PNG / JPG のほか、WEBP / AVIF / BMP にも変換できます。JPG では透明部分が白背景になります。
 
-## 右クリックメニュー
-
-ハンバーガーメニューの「右クリックメニューを管理...」から登録状態を確認・変更できます。未登録の場合は登録、登録済みの場合は解除、不完全な場合は修復を選べます。選んだ操作を実行するときだけ Windows の管理者確認が表示されます。
-
-エクスプローラーでは、画像を右クリックして `SnapImg` を開くと、クリップボードへのコピーと JPG / PNG / WEBP / AVIF / BMP への変換を選べます。コピーした画像は Excel や Teams などで Ctrl+V で貼り付けられます。
-
-Windows 11 では「その他のオプションを確認」に表示される場合があります。
+詳しい操作は [ユーザーマニュアル](USER_MANUAL.md) を参照してください。
 
 ## コマンドライン
 
 ```powershell
-.\snapimg.exe --convert-to jpg "C:\path\to\image.heic"
-.\snapimg.exe --convert-to png "C:\path\to\photos"
+.\snapimg.exe --convert-to png "C:\Images\illustration.svg"
+.\snapimg.exe --convert-to jpg "C:\Images\photo.heic"
 .\snapimg.exe --register-menu
 .\snapimg.exe --unregister-menu
 ```
 
-対応する出力形式は `jpg`、`png`、`webp`、`avif`、`bmp` です。
+入力形式は SVG、HEIC / HEIF、AVIF、JPG / JPEG、PNG、WEBP、BMP、TIFF、GIF、ICO。出力形式は `jpg`、`png`、`webp`、`avif`、`bmp` です。
 
 ## 設定ファイル
 
-ウィンドウサイズは次の場所に保存されます。
-
-```text
-C:\Users\<ユーザー名>\AppData\Local\imgconv\settings.json
-```
-
-## インストーラー作成
-
-Inno Setup 7 をインストールした後、まず配布用ファイルを作成します。
-
-```powershell
-.\build_publish.bat
-```
-
-`build_publish.bat` は `publish-folder` に配布用ファイルを生成します。続いて `build_installer.bat` を実行します。
-
-```powershell
-.\build_installer.bat
-```
-
-Inno Setup の場所は次の候補から自動的に検索されます。
-
-- `C:\Program Files\Inno Setup 7\ISCC.exe`
-- `C:\Program Files (x86)\Inno Setup 7\ISCC.exe`
-- `%LocalAppData%\Programs\Inno Setup 7\ISCC.exe`
-
-インストーラーは `InstallerOutput` フォルダに生成されます。
-
-## プロジェクト構成
-
-- `imgconv.csproj`：.NET 8 WPF プロジェクト
-- `MainWindow.xaml` / `MainWindow.xaml.cs`：画面と操作処理
-- `ImageConverterService.cs`：画像変換・リサイズ
-- `ContextMenuService.cs`：右クリックメニュー登録・解除
-- `CommandLine.cs`：コマンドライン処理
-- `App.xaml` / `App.xaml.cs`：アプリケーション起動処理
-- `main.py`：旧 Python 版のソース（C# 版の実行には使用しません）
->>>>>>> e995c48 (Initial SnapImg C# WPF application)
+ウィンドウサイズは `%LocalAppData%\imgconv\settings.json` に保存されます。

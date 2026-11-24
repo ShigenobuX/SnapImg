@@ -20,13 +20,14 @@ public static class ImagePropertiesService
     public static ImageFileProperties Read(string filePath)
     {
         var file = new FileInfo(filePath);
-        var imageInfos = MagickImageInfo.ReadCollection(file.FullName).ToList();
-        if (imageInfos.Count == 0)
+        var inputExtension = Path.GetExtension(file.FullName);
+        var isSvg = inputExtension.Equals(".svg", StringComparison.OrdinalIgnoreCase);
+        List<IMagickImageInfo> imageInfos = isSvg ? [] : MagickImageInfo.ReadCollection(file.FullName).ToList();
+        if (!isSvg && imageInfos.Count == 0)
             throw new InvalidDataException("画像情報を読み取れませんでした。");
 
         // Depth は簡易情報に含まれないため、先頭フレームだけを読み込みます。
-        using var image = new MagickImage(file.FullName);
-        var inputExtension = Path.GetExtension(file.FullName);
+        using var image = ImageConverterService.ReadImage(file.FullName);
         if (!inputExtension.Equals(".heic", StringComparison.OrdinalIgnoreCase) &&
             !inputExtension.Equals(".heif", StringComparison.OrdinalIgnoreCase))
         {
@@ -34,9 +35,13 @@ public static class ImagePropertiesService
         }
 
         var bitDepth = image.Depth;
-        var info = imageInfos[0];
+        var infoWidth = isSvg ? image.Width : imageInfos[0].Width;
+        var infoHeight = isSvg ? image.Height : imageInfos[0].Height;
+        var infoFormat = isSvg ? image.Format : imageInfos[0].Format;
+        var frameCount = isSvg ? 1 : imageInfos.Count;
         var dpi = "未設定";
-        if (info.Density is { } density)
+        var densityInfo = isSvg ? image.Density : imageInfos[0].Density;
+        if (densityInfo is { } density)
         {
             dpi = density.Units switch
             {
@@ -56,17 +61,17 @@ public static class ImagePropertiesService
             [
                 new("ファイル名", file.Name),
                 new("保存場所", file.DirectoryName ?? string.Empty),
-                new("ファイル形式", $"{Path.GetExtension(file.Name).TrimStart('.').ToUpperInvariant()} ({info.Format})"),
+                new("ファイル形式", $"{Path.GetExtension(file.Name).TrimStart('.').ToUpperInvariant()} ({infoFormat})"),
                 new("ファイルサイズ", FormatFileSize(file.Length)),
                 new("更新日時", file.LastWriteTime.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.CurrentCulture))
             ],
             ImageDetails =
             [
-                new("画像サイズ", $"{info.Width:N0} × {info.Height:N0} ピクセル"),
-                new("縦横比", FormatAspectRatio(info.Width, info.Height)),
+                new("画像サイズ", $"{infoWidth:N0} × {infoHeight:N0} ピクセル"),
+                new("縦横比", FormatAspectRatio(infoWidth, infoHeight)),
                 new("解像度", dpi),
                 new("色深度", $"{bitDepth} bit"),
-                new("フレーム数", $"{imageInfos.Count:N0}")
+                new("フレーム数", $"{frameCount:N0}")
             ]
         };
     }

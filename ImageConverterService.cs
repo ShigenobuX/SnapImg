@@ -5,6 +5,22 @@ namespace ImgConv;
 
 public static class ImageConverterService
 {
+    public static MagickImage ReadImage(string path)
+    {
+        if (Path.GetExtension(path).Equals(".svg", StringComparison.OrdinalIgnoreCase))
+        {
+            var settings = new MagickReadSettings
+            {
+                Format = MagickFormat.Svg,
+                Density = new Density(96, 96, DensityUnit.PixelsPerInch),
+                BackgroundColor = MagickColors.Transparent
+            };
+            return new MagickImage(path, settings);
+        }
+
+        return new MagickImage(path);
+    }
+
     public static List<string> Scan(IEnumerable<string> paths)
     {
         var result = new List<string>();
@@ -29,7 +45,7 @@ public static class ImageConverterService
     {
         try
         {
-            using var image = new MagickImage(input);
+            using var image = ReadImage(input);
             // Magick.NET の HEIC では AutoOrient が不安定なケースがあるため、
             // HEIC/HEIF では明示的な AutoOrient を行わない。
             var inputExtension = Path.GetExtension(input);

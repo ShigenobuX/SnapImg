@@ -44,7 +44,7 @@
     <Grid Margin="0,8,0,0">
       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="300"/></Grid.ColumnDefinitions>
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-      <ListBox x:Name="Files" Grid.Column="0" Grid.Row="1" SelectionMode="Extended" SelectionChanged="Files_SelectionChanged">
+      <ListBox x:Name="Files" Grid.Column="0" Grid.Row="1" SelectionMode="Extended" SelectionChanged="Files_SelectionChanged" MouseDoubleClick="Files_MouseDoubleClick">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid MinHeight="28">
